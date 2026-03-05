@@ -1,14 +1,11 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
       - main
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,6 +27,12 @@ jobs:
 
       - name: Push Angular image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/angular-app:latest
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
 
       - name: Test with docker-compose
         run: docker-compose up -d
